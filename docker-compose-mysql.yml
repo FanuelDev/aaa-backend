@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: yourpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "7070:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: yourpassword
+
+  la_capitale:
+    container_name: dsh_controle
+    image: perce26/entrersortie:dsh_controle
+    restart: always
+    ports:
+      - "3333:3333"
+    environment:
+      # NODE_ENV: production
+      DB_CONNECTION: mysql
+      MYSQL_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: yourpassword
+      MYSQL_DATABASE: dsh-controller
+
+volumes:
+  db-data:
