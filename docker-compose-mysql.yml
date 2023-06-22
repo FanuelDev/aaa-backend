@@ -7,7 +7,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: yourpassword
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - db-data:/mysql
 
@@ -15,7 +15,7 @@ services:
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
-      - "8080:80"
+      - "7070:80"
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: yourpassword
