@@ -34,6 +34,7 @@ export default class ControleRegistrationValidator {
     nbr_jours: schema.number([rules.required()]),
     mise: schema.number([rules.required()]),
     cotisation_total: schema.number([rules.required()]),
+    etat: schema.boolean([rules.required()]),
   })
 
   /**
@@ -56,5 +57,6 @@ export default class ControleRegistrationValidator {
     'nbr_jours.required': 'The nbr_jours is required',
     'mise.required': 'The mise is required',
     'cotisation_total.required': 'The cotisation_total is required',
+    'etat.required': 'The etat is required',
   }
 }

@@ -17,6 +17,7 @@ export default class extends BaseSchema {
       table.integer('nbr_jours', 255).notNullable()
       table.integer('mise', 255).notNullable()
       table.integer('cotisation_total', 255).notNullable()
+      table.boolean('etat').notNullable().defaultTo(false);
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

@@ -35,6 +35,10 @@ export default class Controle extends BaseModel {
   @column()
   public cotisation_total: number
 
+
+  @column()
+  public etat: boolean
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

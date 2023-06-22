@@ -67,6 +67,7 @@ public async listByIdClient({ request, response }) {
       controle.nbr_jours = request.body().nbr_jours
       controle.mise = request.body().mise
       controle.cotisation_total = request.body().cotisation_total
+      controle.etat = request.body().etat
 
       try {
           await controle.save()
