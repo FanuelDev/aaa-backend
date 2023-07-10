@@ -26,6 +26,7 @@ Route.group(() => {
     Route.post('/login', 'AuthController.login')
     Route.post('/register', 'AuthController.register')
     Route.post('/list', 'AuthController.list')
+    Route.post('/change/password/:id', 'AuthController.updatePassword')
   }).prefix('/auth')
 
   /// route pour les produit

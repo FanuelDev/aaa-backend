@@ -149,6 +149,7 @@ export default class CollectesController {
         return response.accepted({
           status: true,
           data: true,
+            dataVerification: controle[0],
           message: "controle par id",
         });
       }else {
@@ -186,6 +187,7 @@ export default class CollectesController {
           return response.accepted({
             status: true,
             data: true,
+            dataVerification: controle[0],
             message: "controle par id",
           });
         }else {
@@ -223,6 +225,7 @@ export default class CollectesController {
           return response.accepted({
             status: true,
             data: true,
+            dataVerification: controle[0],
             message: "controle par id",
           });
         }else {

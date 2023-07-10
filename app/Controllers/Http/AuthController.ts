@@ -87,4 +87,30 @@ export default class AuthController {
       return response.accepted(responseBody)
     }
   }
+
+  public async updatePassword({ request, response }) {
+    try {
+      let password = request.body().password;
+
+      let hashPassword = await Hash.make(password);
+
+      console.log(hashPassword);
+
+      let body = {'password': hashPassword};
+
+      await User.query()
+        .where("id", request.params().id)
+        .update(body);
+
+      return response.accepted({
+        status: true,
+        message: "Mise a jour effectuer avec success",
+      });
+    } catch {
+      return response.accepted({
+        status: false,
+        message: "erreur lors de la mise a jour!",
+      });
+    }
+  }
 }
