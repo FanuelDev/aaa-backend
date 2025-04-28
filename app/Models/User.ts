@@ -10,16 +10,17 @@ export default class User extends BaseModel {
   public name: string
 
   @column()
-  public name_agence: string
-
-  @column()
   public email: string
+  
+  @column()
+  public pieceJustificative?: string
+  
+  @column()
+  public preuveAdresse?: string
+  
 
   @column({ serializeAs: null })
   public password: string
-
-  @column()
-  public role: number
 
   @column()
   public rememberMeToken: string | null

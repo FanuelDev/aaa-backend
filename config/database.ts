@@ -7,6 +7,8 @@
 
 import Env from '@ioc:Adonis/Core/Env'
 import { DatabaseConfig } from '@ioc:Adonis/Lucid/Database'
+import Application from '@ioc:Adonis/Core/Application'
+
 
 const databaseConfig: DatabaseConfig = {
   /*
@@ -33,20 +35,28 @@ const databaseConfig: DatabaseConfig = {
     | npm i mysql2
     |
     */
-    mysql: {
-      client: 'mysql2',
+    // mysql: {
+    //   client: 'mysql2',
+    //   connection: {
+    //     host: Env.get('MYSQL_HOST'),
+    //     port: Env.get('MYSQL_PORT'),
+    //     user: Env.get('MYSQL_USER'),
+    //     password: Env.get('MYSQL_PASSWORD', ''),
+    //     database: Env.get('MYSQL_DB_NAME'),
+    //   },
+    //   migrations: {
+    //     naturalSort: true,
+    //   },
+    //   healthCheck: false,
+    //   debug: false,
+    // },
+    sqlite: {
+      client: 'sqlite3',
       connection: {
-        host: Env.get('MYSQL_HOST'),
-        port: Env.get('MYSQL_PORT'),
-        user: Env.get('MYSQL_USER'),
-        password: Env.get('MYSQL_PASSWORD', ''),
-        database: Env.get('MYSQL_DB_NAME'),
+        filename: Application.tmpPath('db.sqlite3'),
       },
-      migrations: {
-        naturalSort: true,
-      },
-      healthCheck: false,
-      debug: false,
+      useNullAsDefault: true,
+      debug: Env.get('DB_DEBUG', false),
     },
 
   }

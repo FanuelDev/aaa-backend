@@ -25,32 +25,28 @@ Route.group(() => {
   Route.group(() => {
     Route.post('/login', 'AuthController.login')
     Route.post('/register', 'AuthController.register')
-    Route.post('/list', 'AuthController.list')
-    Route.post('/change/password/:id', 'AuthController.updatePassword')
+
   }).prefix('/auth')
+
+
+  Route.resource('cars', 'CarsController').apiOnly()
+
+  // Liste complète sans auth
+  Route.get('cars/list/public', 'CarsController.public')
+
+  // Liste filtrée (via query string)
+  Route.get('cars/list/filter', 'CarsController.filter')
 
   /// route pour les produit
   Route.group(() => {
     Route.get('/list', 'AuthController.list')
   }).prefix('/controlleur').middleware(['auth'])
 
-  /// route pour les produit
   Route.group(() => {
-    Route.get('/list', 'CollectesController.list')
-    Route.get('/getById/:id', 'CollectesController.listById')
-    Route.get('/getByIdCollecteur/:id_collecteur', 'CollectesController.listByIdCollecteur')
-    Route.get('/getByIdClient/:id_client', 'CollectesController.listByIdClient')
-    Route.get('/getByIdCollecteur/verification/:id_collecteur', 'CollectesController.verificationByIdCollecteur')
-    Route.get('/getByIdClient/verification/:id_client', 'CollectesController.verificationByIdClient')
-    Route.get('/getByIdCarnet/verification/:id_carnet', 'CollectesController.verificationByIdCarnet')
-    Route.post('/save', 'CollectesController.save')
-    Route.post('/update/:id', 'CollectesController.update')
-  }).prefix('/collecte').middleware(['auth'])
+    Route.post('/reservations', 'ReservationsController.store')
+  }).middleware('auth')
+  Route.get('/reservations/me', 'ReservationsController.myReservations').middleware('auth')
+  Route.post('/reservations/calculate-total', 'ReservationsController.calculateTotal')
 
 
-  /// route pour les mois
-  Route.group(() => {
-    Route.get('/list', 'MoisController.list')
-    Route.get('/getById/:id', 'MoisController.listById')
-  }).prefix('/mois').middleware(['auth'])
 }).prefix('/api')
