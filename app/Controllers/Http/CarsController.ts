@@ -21,7 +21,6 @@ export default class CarsController {
         return car
     }
 
-
     public async filter({ request }: HttpContextContract) {
         const {
             type_vehicule,
@@ -43,9 +42,9 @@ export default class CarsController {
 
         const cars = await Car.query()
             .where('statut', 'Disponible')
-            .if(type_vehicule, (q) => q.where('type_vehicule', type_vehicule))
-            .if(gamme, (q) => q.where('gamme', gamme))
-            .if(energie, (q) => q.where('energie', energie))
+            .if(type_vehicule && Array.isArray(type_vehicule), (q) => q.whereIn('type_vehicule', type_vehicule)) // Vérifie si type_vehicule est un tableau et applique whereIn
+            .if(gamme && Array.isArray(gamme), (q) => q.whereIn('gamme', gamme)) // Pareil pour gamme
+            .if(energie && Array.isArray(energie), (q) => q.whereIn('energie', energie)) // Pareil pour energie
             .if(min_prix, (q) => q.where('prix_journalier', '>=', Number(min_prix)))
             .if(max_prix, (q) => q.where('prix_journalier', '<=', Number(max_prix)))
             .if(boite_auto, (q) => q.where('boite_auto', boite_auto === 'true'))
@@ -61,6 +60,7 @@ export default class CarsController {
 
         return cars
     }
+
 
 
     public async index({ request }: HttpContextContract) {
@@ -109,7 +109,7 @@ export default class CarsController {
 
         // Enregistrement du fichier
         const fileName = `${cuid()}.${image.extname}`
-        await image.move(Application.publicPath('uploads/cars'), {
+        await image.move(Application.tmpPath('uploads/cars'), {
             name: fileName,
             overwrite: true,
         })

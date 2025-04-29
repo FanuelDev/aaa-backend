@@ -9,7 +9,7 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - db-data:/mysql
+      - db-data:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -20,19 +20,20 @@ services:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: yourpassword
 
-  la_capitale:
-    container_name: dsh_controle
-    image: perce26/entrersortie:dsh_controle
+  aaa-backend:
+    container_name: aaa-backend
+    build:
+      context: ./  # Le dossier où se trouve ton Dockerfile
+      dockerfile: Dockerfile  # Nom du fichier Docker, par défaut c'est "Dockerfile"
     restart: always
     ports:
       - "4444:3333"
     environment:
-      # NODE_ENV: production
       DB_CONNECTION: mysql
       MYSQL_HOST: db
       MYSQL_USER: root
       MYSQL_PASSWORD: yourpassword
-      MYSQL_DATABASE: dsh-controller
+      MYSQL_DATABASE: aaa-db
 
 volumes:
   db-data:

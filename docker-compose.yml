@@ -1,8 +1,8 @@
 version: '3.8'
 services:
   la_capitale:
-    container_name: dsh_controle
-    image: perce26/entrersortie:dsh_controle
+    container_name: aaa-backend
+    image: perce26/entrersortie:aaa-backend
     restart: always
     ports:
       - "3333:3333"
