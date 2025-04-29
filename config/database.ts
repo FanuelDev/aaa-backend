@@ -7,7 +7,7 @@
 
 import Env from '@ioc:Adonis/Core/Env'
 import { DatabaseConfig } from '@ioc:Adonis/Lucid/Database'
-import Application from '@ioc:Adonis/Core/Application'
+// import Application from '@ioc:Adonis/Core/Application'
 
 
 const databaseConfig: DatabaseConfig = {
