@@ -27,7 +27,7 @@ services:
       dockerfile: Dockerfile  # Nom du fichier Docker, par défaut c'est "Dockerfile"
     restart: always
     ports:
-      - "4444:3333"
+      - "3333:3333"
 
 # volumes:
 #   db-data:
