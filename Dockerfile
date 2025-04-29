@@ -1,22 +1,23 @@
-# Étape 1 : build l'app avec Node.js
-FROM node:20-alpine
+# Base Image
+FROM node:16-alpine
 
-# Définir le répertoire de travail
-WORKDIR /app
+# Create app directory
+WORKDIR /usr/src/app
 
-# Copier les fichiers de configuration
+# Copy package.json and package-lock.json
 COPY package*.json ./
-RUN npm install
 
-# Copier le reste du code
+# Install dependencies
+RUN npm ci --only=production --force
+
+# Copy rest of the application code
 COPY . .
 
-# Compiler TypeScript (si nécessaire)
-RUN npm run build
+# Build the app
+# RUN npm run build
 
-# Exposer le port (par défaut : 3333)
+# Expose port
 EXPOSE 3333
 
-# Démarrer le serveur HTTP
-CMD ["node", "build/server.js"]
-
+# Start the app
+CMD ["npm", "run", "dev"]

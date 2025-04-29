@@ -1,33 +1,41 @@
-version: '3.8'
+version: '3'
 
 services:
-  # db:
-  #   image: mysql:latest
-  #   restart: always
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: yourpassword
-  #   ports:
-  #     - "3307:3306"
-  #   volumes:
-  #     - db-data:/var/lib/mysql
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: yourpassword
+    ports:
+      - "3305:3306"
+    volumes:
+      - db-data:/mysql
 
-  # phpmyadmin:
-  #   image: phpmyadmin/phpmyadmin
-  #   restart: always
-  #   ports:
-  #     - "7070:80"
-  #   environment:
-  #     PMA_HOST: db
-  #     MYSQL_ROOT_PASSWORD: yourpassword
-
-  aaa-backend:
-    container_name: aaa-backend
-    build:
-      context: ./  # Le dossier où se trouve ton Dockerfile
-      dockerfile: Dockerfile  # Nom du fichier Docker, par défaut c'est "Dockerfile"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
     restart: always
     ports:
-      - "3333:3333"
+      - "5050:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: yourpassword
 
-# volumes:
-#   db-data:
+  la_capitale:
+    container_name: aaa-backend
+    # image: perce26/entrersortie:aaa-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5555:3333"
+    environment:
+      # NODE_ENV: production
+      DB_CONNECTION: mysql
+      MYSQL_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: yourpassword
+      MYSQL_DATABASE: aaa-db
+
+volumes:
+  db-data:
