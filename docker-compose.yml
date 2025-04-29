@@ -2,11 +2,14 @@ version: '3.8'
 
 services:
   adonis:
-    build: .
+    build:
+      context: ./  # Le dossier où se trouve ton Dockerfile
+      dockerfile: Dockerfile  # Nom du fichier Docker, par défaut c'est "Dockerfile"
+    restart: always
     container_name: adonis_app
     volumes:
       - .:/app
-      - ./tmp/db.sqlite3  # pour persister le fichier SQLite
+      - ./database:/app/database  # pour persister le fichier SQLite
     ports:
       - "3333:3333"
     environment:
@@ -14,5 +17,5 @@ services:
       - PORT=3333
       - NODE_ENV=development
       - DB_CONNECTION=sqlite
-      - DB_DATABASE=./tmp/db.sqlite3
+      - DB_DATABASE=./database/database.sqlite
     command: node build/server.js
