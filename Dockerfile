@@ -19,3 +19,4 @@ EXPOSE 3333
 
 # Démarrer le serveur HTTP
 CMD ["node", "build/server.js"]
+
