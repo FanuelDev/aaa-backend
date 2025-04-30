@@ -1,8 +1,8 @@
 version: '3.8'
 services:
   la_capitale:
-    container_name: dsh_controle
-    image: perce26/entrersortie:dsh_controle
+    container_name: la_capitale
+    image: perce26/entrersortie:la_capitale
     restart: always
     ports:
       - "3333:3333"
@@ -13,7 +13,7 @@ services:
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: yourpassword
-      DB_DATABASE: dsh-controller
+      DB_DATABASE: la-capitale
     depends_on:
       - db
 

@@ -8,13 +8,13 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --only=production
+RUN npm ci --only=production --force
 
 # Copy rest of the application code
 COPY . .
 
 # Build the app
-RUN npm run build
+# RUN npm run build
 
 # Expose port
 EXPOSE 3333
