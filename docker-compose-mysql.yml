@@ -20,7 +20,7 @@ services:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: yourpassword
 
-  la_capitale:
+  aaa_backend:
     container_name: aaa-backend
     # image: perce26/entrersortie:aaa-backend
     build:
