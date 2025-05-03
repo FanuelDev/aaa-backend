@@ -13,7 +13,7 @@ export default class extends BaseSchema {
       table.integer('prix_journalier') // en XOF
 
       table.string('type_vehicule') // citadine, SUV, etc.
-      table.string('energie') // thermique, hybride, électrique
+      table.string('energie') // Essence, hybride, électrique
       table.boolean('chauffeur').defaultTo(false)
       table.boolean('longue_duree').defaultTo(false)
       table.boolean('mariage_event').defaultTo(false)

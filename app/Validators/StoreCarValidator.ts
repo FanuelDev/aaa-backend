@@ -34,7 +34,7 @@ export default class StoreCarValidator {
       'Citadine', 'Berline', 'SUV', '4x4', 'Van', 'Minibus', 'Luxe', 'Utilitaire'
     ] as const),
 
-    energie: schema.enum(['Thermique', 'Hybride', 'Electrique'] as const),
+    energie: schema.enum(['Essence', 'Hybride', 'Electrique'] as const),
 
     chauffeur: schema.boolean(),
     longue_duree: schema.boolean(),

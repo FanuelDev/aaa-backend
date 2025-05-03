@@ -33,7 +33,7 @@ export default class Car extends BaseModel {
     | 'Utilitaire'
 
   @column()
-  public energie: 'Thermique' | 'Hybride' | 'Electrique'
+  public energie: 'Essence' | 'Hybride' | 'Electrique'
 
   @column()
   public boite_auto: boolean
