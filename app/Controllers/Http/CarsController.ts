@@ -42,21 +42,21 @@ export default class CarsController {
 
         const cars = await Car.query()
             .where('statut', 'Disponible')
-            .if(type_vehicule && Array.isArray(type_vehicule), (q) => q.whereIn('type_vehicule', type_vehicule)) // Vérifie si type_vehicule est un tableau et applique whereIn
-            .if(gamme && Array.isArray(gamme), (q) => q.whereIn('gamme', gamme)) // Pareil pour gamme
-            .if(energie && Array.isArray(energie), (q) => q.whereIn('energie', energie)) // Pareil pour energie
+            .if(type_vehicule && Array.isArray(type_vehicule), (q) => q.whereIn('type_vehicule', type_vehicule))
+            .if(gamme && Array.isArray(gamme), (q) => q.whereIn('gamme', gamme))
+            .if(energie && Array.isArray(energie), (q) => q.whereIn('energie', energie))
             .if(min_prix, (q) => q.where('prix_journalier', '>=', Number(min_prix)))
             .if(max_prix, (q) => q.where('prix_journalier', '<=', Number(max_prix)))
-            .if(boite_auto, (q) => q.where('boite_auto', boite_auto === 'true'))
-            .if(climatisation, (q) => q.where('climatisation', climatisation === 'true'))
-            .if(gps, (q) => q.where('gps', gps === 'true'))
-            .if(wifi, (q) => q.where('wifi', wifi === 'true'))
-            .if(siege_bebe, (q) => q.where('siege_bebe', siege_bebe === 'true'))
-            .if(chauffeur, (q) => q.where('chauffeur', chauffeur === 'true'))
-            .if(longue_duree, (q) => q.where('longue_duree', longue_duree === 'true'))
-            .if(mariage_event, (q) => q.where('mariage_event', mariage_event === 'true'))
-            .if(marchandises, (q) => q.where('marchandises', marchandises === 'true'))
-            .if(places, (q) => q.where('places', '>=', Number(places)))
+            .if(boite_auto !== undefined, (q) => q.where('boite_auto', boite_auto === 'true' ? 1 : 0))
+            .if(climatisation !== undefined, (q) => q.where('climatisation', climatisation === 'true' ? 1 : 0))
+            .if(gps !== undefined, (q) => q.where('gps', gps === 'true' ? 1 : 0))
+            .if(wifi !== undefined, (q) => q.where('wifi', wifi === 'true' ? 1 : 0))
+            .if(siege_bebe !== undefined, (q) => q.where('siege_bebe', siege_bebe === 'true' ? 1 : 0))
+            .if(chauffeur !== undefined, (q) => q.where('chauffeur', chauffeur === 'true' ? 1 : 0))
+            .if(longue_duree !== undefined, (q) => q.where('longue_duree', longue_duree === 'true' ? 1 : 0))
+            .if(mariage_event !== undefined, (q) => q.where('mariage_event', mariage_event === 'true' ? 1 : 0))
+            .if(marchandises !== undefined, (q) => q.where('marchandises', marchandises === 'true' ? 1 : 0))
+            .if(places, (q) => q.where('places', '>=', Number(places)));
 
         return cars
     }
