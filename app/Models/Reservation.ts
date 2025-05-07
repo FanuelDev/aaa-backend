@@ -25,29 +25,29 @@ export default class Reservation extends BaseModel {
   @column.dateTime()
   public endDate: DateTime
 
-  @column()
-  public chauffeur: boolean
+  // @column()
+  // public chauffeur: boolean
 
-  @column()
-  public gps: boolean
+  // @column()
+  // public gps: boolean
 
-  @column()
-  public wifi: boolean
+  // @column()
+  // public wifi: boolean
 
-  @column()
-  public siegeBebe: boolean
+  // @column()
+  // public siegeBebe: boolean
 
-  @column()
-  public climatisation: boolean
+  // @column()
+  // public climatisation: boolean
 
-  @column()
-  public boiteAuto: boolean
+  // @column()
+  // public boiteAuto: boolean
 
   @column()
   public statut: StatutReservation
 
   @column()
-  public total: number
+  public prix_total: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

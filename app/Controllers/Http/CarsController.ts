@@ -7,7 +7,6 @@ import Application from '@ioc:Adonis/Core/Application'
 export default class CarsController {
     public async public() {
         const cars = await Car.all()
-        console.log(cars)
         return cars
     }
 
@@ -39,6 +38,7 @@ export default class CarsController {
             marchandises,
             places,
         } = request.qs()
+
 
         const cars = await Car.query()
             .where('statut', 'Disponible')

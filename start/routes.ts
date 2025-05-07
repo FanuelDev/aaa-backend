@@ -47,6 +47,5 @@ Route.group(() => {
   }).middleware('auth')
   Route.get('/reservations/me', 'ReservationsController.myReservations').middleware('auth')
   Route.post('/reservations/calculate-total', 'ReservationsController.calculateTotal')
-
-
+  
 }).prefix('/api')

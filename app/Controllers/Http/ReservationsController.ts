@@ -20,12 +20,12 @@ export default class ReservationsController {
 
         const existing = await Reservation
             .query()
-            .where('car_id', payload.car_id)
+            .where('id', payload.car_id)
             .where(q => {
-                q.whereBetween('date_debut', [payload.start_date.toJSDate(), payload.end_date.toJSDate()])
-                    .orWhereBetween('date_fin', [payload.start_date.toJSDate(), payload.end_date.toJSDate()])
-                    .orWhereRaw('? BETWEEN date_debut AND date_fin', [payload.start_date.toJSDate()])
-                    .orWhereRaw('? BETWEEN date_debut AND date_fin', [payload.end_date.toJSDate()])
+                q.whereBetween('start_date', [payload.start_date.toJSDate(), payload.end_date.toJSDate()])
+                    .orWhereBetween('end_date', [payload.start_date.toJSDate(), payload.end_date.toJSDate()])
+                    .orWhereRaw('? BETWEEN start_date AND end_date', [payload.start_date.toJSDate()])
+                    .orWhereRaw('? BETWEEN start_date AND end_date', [payload.end_date.toJSDate()])
             })
             .first()
 
@@ -43,12 +43,14 @@ export default class ReservationsController {
         }
 
         // Prix options supplémentaires
-        const optionsPrice = [
-            payload.chauffeur ? 20000 : 0,
-            payload.gps ? 10000 : 0,
-            payload.wifi ? 10000 : 0,
-            payload.siege_bebe ? 10000 : 0,
-        ].reduce((a, b) => a + b, 0)
+        // const optionsPrice = [
+        //     payload.chauffeur ? 20000 : 0,
+        //     payload.gps ? 10000 : 0,
+        //     payload.wifi ? 10000 : 0,
+        //     payload.siege_bebe ? 10000 : 0,
+        // ].reduce((a, b) => a + b, 0)
+
+        const optionsPrice = 0
 
         const prixTotal = (car.prix_journalier * days) + optionsPrice
 
@@ -57,11 +59,7 @@ export default class ReservationsController {
             carId: car.id,
             startDate: payload.start_date,
             endDate: payload.end_date,
-            chauffeur: payload.chauffeur ?? false,
-            gps: payload.gps ?? false,
-            wifi: payload.wifi ?? false,
-            siegeBebe: payload.siege_bebe ?? false,
-            total: prixTotal,
+            prix_total: prixTotal,
         })
 
         return response.created(reservation)
