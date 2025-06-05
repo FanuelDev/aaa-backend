@@ -25,8 +25,9 @@ Route.group(() => {
   Route.group(() => {
     Route.post('/login', 'AuthController.login')
     Route.post('/register', 'AuthController.register')
-
   }).prefix('/auth')
+
+  Route.resource('user', 'AuthController').apiOnly()
 
 
   Route.resource('cars', 'CarsController').apiOnly()
@@ -43,9 +44,9 @@ Route.group(() => {
   }).prefix('/controlleur').middleware(['auth'])
 
   Route.group(() => {
-    Route.post('/reservations', 'ReservationsController.store')
+    Route.resource('/reservations', 'ReservationsController').apiOnly()
   }).middleware('auth')
   Route.get('/reservations/me', 'ReservationsController.myReservations').middleware('auth')
   Route.post('/reservations/calculate-total', 'ReservationsController.calculateTotal')
-  
+
 }).prefix('/api')

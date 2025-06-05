@@ -3,6 +3,13 @@ import User from 'App/Models/User'
 import RegisterValidator from 'App/Validators/RegisterValidator'
 
 export default class AuthController {
+
+  public async index() {
+    const user = await User.all()
+    return user
+  }
+
+
   public async register({ request, auth, response }: HttpContextContract) {
     const payload = await request.validate(RegisterValidator)
 

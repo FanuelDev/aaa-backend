@@ -7,6 +7,27 @@ import dayjs from 'dayjs'
 import CalculateTotalValidator from 'App/Validators/CalculateTotalValidator'
 
 export default class ReservationsController {
+    
+    public async index() {
+        const reservations = await Reservation.all()
+        return reservations
+    }
+
+
+    public async public() {
+        const reservations = await Reservation.all()
+        return reservations
+    }
+
+    public async show({ params, response }: HttpContextContract) {
+        const car = await Reservation.find(params.id)
+
+        if (!car) {
+            return response.notFound({ message: 'Voiture non trouvée' })
+        }
+
+        return car
+    }
 
     public async store({ auth, request, response }: HttpContextContract) {
         await auth.use('api').authenticate()
