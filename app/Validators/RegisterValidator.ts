@@ -38,7 +38,6 @@ export default class RegisterValidator {
       extnames: ['jpg', 'png', 'pdf'],
       size: '5mb',
     }),
-    
   })
 
   /**

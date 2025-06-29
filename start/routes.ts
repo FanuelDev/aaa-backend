@@ -49,4 +49,18 @@ Route.group(() => {
   Route.get('/reservations/me', 'ReservationsController.myReservations').middleware('auth')
   Route.post('/reservations/calculate-total', 'ReservationsController.calculateTotal')
 
+  Route.group(() => {
+    Route.post('login', 'AdminAuthController.login')
+
+    Route.group(() => {
+      Route.get('stats', 'Admin/DashboardController.index')
+      Route.get('accounts', 'Admin/AccountsController.index')
+      Route.get('reservations', 'Admin/ReservationsController.index')
+      Route.post('reservations/:id/validate', 'Admin/ReservationsController.validate')
+      Route.get('vehicles', 'Admin/VehiclesController.index')
+    }).middleware('auth:admin')
+    
+  }).prefix('/admin')
+
+
 }).prefix('/api')
