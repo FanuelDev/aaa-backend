@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import User from './User'
+import Car from './Car'
 
 export enum StatutReservation {
   EN_ATTENTE = 'en_attente',
@@ -25,23 +27,12 @@ export default class Reservation extends BaseModel {
   @column.dateTime()
   public endDate: DateTime
 
-  // @column()
-  // public chauffeur: boolean
+  
+  @belongsTo(() => User)
+  public user: BelongsTo<typeof User>
 
-  // @column()
-  // public gps: boolean
-
-  // @column()
-  // public wifi: boolean
-
-  // @column()
-  // public siegeBebe: boolean
-
-  // @column()
-  // public climatisation: boolean
-
-  // @column()
-  // public boiteAuto: boolean
+  @belongsTo(() => Car, { foreignKey: 'carId' }) // Si modèle nommé Vehicle
+  public car: BelongsTo<typeof Car>
 
   @column()
   public statut: StatutReservation

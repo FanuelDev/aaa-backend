@@ -1,6 +1,8 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
+import { cuid } from '@ioc:Adonis/Core/Helpers'
 import RegisterValidator from 'App/Validators/RegisterValidator'
+import Application from '@ioc:Adonis/Core/Application'
 
 export default class AuthController {
 
@@ -19,15 +21,25 @@ export default class AuthController {
     let preuvePath = ''
 
     if (payload.piece_justificative) {
-      await payload.piece_justificative.moveToDisk('pieces')
-      piecePath = payload.piece_justificative.fileName ?? ''
+      const fileName = `${cuid()}.${payload.piece_justificative.extname}`
+      await payload.piece_justificative.move(Application.tmpPath('uploads/piece'), {
+        name: fileName,
+        overwrite: true,
+      })
+      piecePath = `uploads/piece/${fileName}`;
     }
 
     if (payload.preuve_adresse) {
-      await payload.preuve_adresse.moveToDisk('preuves')
-      preuvePath = payload.preuve_adresse.fileName ?? ''
+      const fileName = `${cuid()}.${payload.preuve_adresse.extname}`
+      await payload.preuve_adresse.move(Application.tmpPath('uploads/adresse'), {
+        name: fileName,
+        overwrite: true,
+      })
+      preuvePath = `uploads/adresse/${fileName}`
     }
 
+    console.log(piecePath)
+    console.log(preuvePath)
     const user = await User.create({
       name,
       email,
@@ -51,7 +63,10 @@ export default class AuthController {
 
     try {
       const token = await auth.use('api').attempt(email, password)
+      console.log(token)
       const user = auth.user!
+
+      console.log(user)
 
       return response.ok({
         type: token.type,
@@ -59,10 +74,10 @@ export default class AuthController {
         expires_at: token.expiresAt,
         info: {
           id: user.id,
-          name: user.name,
+          nom: user.name,
           email: user.email,
-          piece_justificative: user.pieceJustificative,
-          preuve_adresse: user.preuveAdresse,
+          piece_identite: user.pieceIdentite,
+          justificatif_adresse: user.justificatifAdresse,
         },
       })
     } catch {

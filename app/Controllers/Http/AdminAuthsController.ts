@@ -1,15 +1,14 @@
-import Admin from 'App/Models/Admin'
-import Hash from '@ioc:Adonis/Core/Hash'
 
-export default class AdminAuthController {
-    public async login({ request, auth, response }) {
+export default class AdminAuthsController {
+    public async login({ request, response }) {
         const { email, password } = request.only(['email', 'password'])
-        const admin = await Admin.findBy('email', email)
-        if (!admin || !(await Hash.verify(admin.password, password))) {
-            return response.unauthorized({ message: 'Invalid credentials' })
-        }
 
-        const token = await auth.use('admin').generate(admin)
-        return { token, admin }
+        console.log(email)
+        console.log(password)
+        if (email == 'admin@gmail.com' && password == 'Admin') {
+            response.ok({ status: true, message: "Connexion effectuer avec success" })
+        } else {
+            return response.unauthorized({ error: 'Email ou mot de passe incorrect' })
+        }
     }
 }
