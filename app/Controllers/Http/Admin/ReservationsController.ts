@@ -6,7 +6,7 @@ export default class ReservationsController {
     // 🔍 Liste des réservations
     public async index({ }: HttpContextContract) {
         const reservations = await Reservation.query()
-            .preload('user', (query) => query.select(['id', 'name', 'email']))
+            .preload('user', (query) => query.select(['id', 'name', 'email', 'piece_justificative']))
             .preload('car', (query) => query.select(['id', 'marque', 'modele']))
             .orderBy('created_at', 'desc')
 
@@ -14,6 +14,7 @@ export default class ReservationsController {
         return reservations.map((r) => ({
             id: r.id,
             client: `${r.user.name} ${r.user.email}`,
+            piece_justificative: `${r.user.pieceJustificative}`,
             voiture: `${r.car.marque} ${r.car.modele}`,
             dateReservation: r.createdAt.toFormat('dd/MM/yyyy'),
             dateDebut: r.startDate.toFormat('dd/MM/yyyy'),
