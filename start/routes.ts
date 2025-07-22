@@ -46,7 +46,7 @@ Route.group(() => {
   Route.group(() => {
     Route.resource('/reservations', 'ReservationsController').apiOnly()
   }).middleware('auth')
-  Route.get('/reservations/me', 'ReservationsController.myReservations').middleware('auth')
+  Route.get('/reservations/me/:id', 'ReservationsController.myReservations')
   Route.post('/reservations/calculate-total', 'ReservationsController.calculateTotal')
 
   Route.group(() => {

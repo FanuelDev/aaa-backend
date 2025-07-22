@@ -7,10 +7,35 @@ import dayjs from 'dayjs'
 import CalculateTotalValidator from 'App/Validators/CalculateTotalValidator'
 
 export default class ReservationsController {
-    
+
     public async index() {
         const reservations = await Reservation.all()
         return reservations
+    }
+
+    public async myReservations({ params, response }: HttpContextContract) {
+        const userId = params.id
+
+        const reservations = await Reservation
+            .query()
+            .where('user_id', userId)
+            .preload('car') // s'assure que le modèle Reservation a une relation `car`
+            .orderBy('start_date', 'desc')
+
+
+        const result = reservations.map(reservation => {
+            return {
+                voiture: reservation.car?.marque + ' ' + reservation.car?.modele, // adapte selon tes colonnes
+                date_debut: reservation.startDate,
+                date_fin: reservation.endDate,
+                image: reservation.car?.image,
+                montant: reservation.prix_total,
+                etat: reservation.statut || 'en attente',
+                date_reservation: reservation.createdAt, // adapte selon si tu as un champ status
+            }
+        })
+
+        return response.ok(result)
     }
 
 
@@ -145,4 +170,6 @@ export default class ReservationsController {
             total,
         }
     }
+
+
 }
