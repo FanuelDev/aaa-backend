@@ -48,10 +48,12 @@ export default class StoreCarValidator {
     wifi: schema.boolean(),
     siege_bebe: schema.boolean(),
 
-    image: schema.file({
-      extnames: ['jpg', 'png', 'jpeg', 'webp'],
-      size: '2mb'
-    }),
+    images: schema.array.optional([ rules.maxLength(4) ]).members(
+      schema.file({
+        size: '5mb',
+        extnames: ['jpg', 'png', 'jpeg', 'webp'],
+      })
+    ),
 
     statut: schema.enum(['Disponible', 'Indisponible'] as const),
   })

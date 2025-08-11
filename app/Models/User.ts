@@ -11,6 +11,9 @@ export default class User extends BaseModel {
 
   @column()
   public email: string
+
+  @column()
+  public tel: string
   
   @column()
   public pieceJustificative?: string

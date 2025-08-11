@@ -5,7 +5,7 @@ import Car from 'App/Models/Car'
 export default class VehiclesController {
   public async index({}: HttpContextContract) {
     const cars = await Car.query()
-      .select('id', 'marque', 'modele', 'annee', 'prix_journalier', 'image', 'statut', 'gamme', 'climatisation')
+      .select('id', 'marque', 'modele', 'annee', 'prix_journalier', 'image', 'statut', 'gamme', 'climatisation', 'type_vehicule', 'energie', 'boite_auto', 'places')
       .orderBy('created_at', 'desc')
 
     return cars.map((car) => ({

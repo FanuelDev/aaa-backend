@@ -29,11 +29,14 @@ export default class RegisterValidator {
       rules.email(),
       rules.unique({ table: 'users', column: 'email' }),
     ]),
+    tel: schema.string({}, [rules.minLength(2)]),
     password: schema.string({}, [rules.minLength(6)]),
-    piece_justificative: schema.file({
-      extnames: ['jpg', 'png', 'pdf'],
-      size: '5mb',
-    }),
+    piece_justificative: schema.array().members(
+      schema.file({
+        size: '5mb',
+        extnames: ['jpg', 'png', 'pdf'],
+      })
+    ),
     preuve_adresse: schema.file({
       extnames: ['jpg', 'png', 'pdf'],
       size: '5mb',

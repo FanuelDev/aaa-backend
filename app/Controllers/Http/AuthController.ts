@@ -15,19 +15,22 @@ export default class AuthController {
   public async register({ request, auth, response }: HttpContextContract) {
     const payload = await request.validate(RegisterValidator)
 
-    const { name, email, password } = payload
+    const { name, email, tel, password } = payload
 
-    let piecePath = ''
+    let piecePaths: string[] = []
     let preuvePath = ''
 
-    if (payload.piece_justificative) {
-      const fileName = `${cuid()}.${payload.piece_justificative.extname}`
-      await payload.piece_justificative.move(Application.tmpPath('uploads/piece'), {
+    // 📌 Traitement des pièces justificatives multiples
+  if (payload.piece_justificative && payload.piece_justificative.length > 0) {
+    for (const file of payload.piece_justificative) {
+      const fileName = `${cuid()}.${file.extname}`
+      await file.move(Application.tmpPath('uploads/piece'), {
         name: fileName,
         overwrite: true,
       })
-      piecePath = `uploads/piece/${fileName}`;
+      piecePaths.push(`uploads/piece/${fileName}`)
     }
+  }
 
     if (payload.preuve_adresse) {
       const fileName = `${cuid()}.${payload.preuve_adresse.extname}`
@@ -38,13 +41,14 @@ export default class AuthController {
       preuvePath = `uploads/adresse/${fileName}`
     }
 
-    console.log(piecePath)
+    console.log(piecePaths)
     console.log(preuvePath)
     const user = await User.create({
       name,
       email,
+      tel,
       password,
-      pieceJustificative: piecePath,
+      pieceJustificative: JSON.stringify(piecePaths),
       preuveAdresse: preuvePath,
     })
 

@@ -37,8 +37,9 @@ export default class CarsController {
             mariage_event,
             marchandises,
             places,
+            date_debut,
+            date_fin
         } = request.qs()
-
 
         const cars = await Car.query()
             .where('statut', 'Disponible')
@@ -56,7 +57,23 @@ export default class CarsController {
             .if(longue_duree !== undefined, (q) => q.where('longue_duree', longue_duree === 'true' ? 1 : 0))
             .if(mariage_event !== undefined, (q) => q.where('mariage_event', mariage_event === 'true' ? 1 : 0))
             .if(marchandises !== undefined, (q) => q.where('marchandises', marchandises === 'true' ? 1 : 0))
-            .if(places, (q) => q.where('places', '>=', Number(places)));
+            .if(places, (q) => q.where('places', '>=', Number(places)))
+            .if(date_debut && date_fin, (q) => {
+                q.whereNotExists((sub) => {
+                    sub.from('reservations')
+                        .whereRaw('reservations.car_id = cars.id')
+                        .where('statut', 'Confirmée')
+                        .where((builder) => {
+                            builder
+                                .whereBetween('start_date', [date_debut, date_fin])
+                                .orWhereBetween('end_date', [date_debut, date_fin])
+                                .orWhere((b) => {
+                                    b.where('start_date', '<=', date_debut)
+                                        .andWhere('end_date', '>=', date_fin)
+                                })
+                        })
+                })
+            })
 
         return cars
     }
@@ -105,16 +122,19 @@ export default class CarsController {
     public async store({ request, response }: HttpContextContract) {
         const payload = await request.validate(StoreCarValidator)
 
-        const image = payload.image
+        const imagePaths: string[] = []
 
-        // Enregistrement du fichier
-        const fileName = `${cuid()}.${image.extname}`
-        await image.move(Application.tmpPath('uploads/cars'), {
-            name: fileName,
-            overwrite: true,
-        })
+        if (payload.images && payload.images.length > 0) {
+            for (const image of payload.images) {
+                const fileName = `${cuid()}.${image.extname}`
+                await image.move(Application.tmpPath('uploads/cars'), {
+                    name: fileName,
+                    overwrite: true,
+                })
+                imagePaths.push(`uploads/cars/${fileName}`)
+            }
+        }
 
-        // Récupération du reste du formulaire
         const data = request.only([
             'marque', 'modele', 'annee', 'gamme', 'prix_journalier',
             'type_vehicule', 'energie', 'boite_auto', 'climatisation',
@@ -122,12 +142,52 @@ export default class CarsController {
             'mariage_event', 'marchandises', 'places', 'statut'
         ])
 
-        // Création du véhicule avec chemin de l'image
         const car = await Car.create({
             ...data,
-            image: `uploads/cars/${fileName}`,
+            image: JSON.stringify(imagePaths), // Stockage en JSON
         })
 
         return response.created(car)
     }
+
+    public async update({ params, request, response }: HttpContextContract) {
+        const car = await Car.find(params.id)
+        if (!car) {
+            return response.notFound({ message: 'Voiture non trouvée' })
+        }
+
+        const imagePaths: string[] = car.image ? JSON.parse(car.image) : []
+
+        const newImages = request.files('images', {
+            size: '5mb',
+            extnames: ['jpg', 'png', 'jpeg', 'webp'],
+        })
+
+        for (const image of newImages) {
+            if (imagePaths.length >= 4) break
+            const fileName = `${cuid()}.${image.extname}`
+            await image.move(Application.tmpPath('uploads/cars'), {
+                name: fileName,
+                overwrite: true,
+            })
+            imagePaths.push(`uploads/cars/${fileName}`)
+        }
+
+        const data = request.only([
+            'marque', 'modele', 'annee', 'gamme', 'prix_journalier',
+            'type_vehicule', 'energie', 'boite_auto', 'climatisation',
+            'gps', 'wifi', 'siege_bebe', 'chauffeur', 'longue_duree',
+            'mariage_event', 'marchandises', 'places', 'statut'
+        ])
+
+        car.merge({
+            ...data,
+            image: JSON.stringify(imagePaths),
+        })
+        await car.save()
+
+        return response.ok({ message: 'Voiture mise à jour', car })
+    }
+
+
 }
