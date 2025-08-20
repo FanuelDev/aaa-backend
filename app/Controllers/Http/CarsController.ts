@@ -119,75 +119,105 @@ export default class CarsController {
         return cars
     }
 
-    public async store({ request, response }: HttpContextContract) {
-        const payload = await request.validate(StoreCarValidator)
+  public async store({ request, response }: HttpContextContract) {
+    const payload = await request.validate(StoreCarValidator)
 
-        const imagePaths: string[] = []
+    const imagePaths: string[] = []
 
-        if (payload.images && payload.images.length > 0) {
-            for (const image of payload.images) {
-                const fileName = `${cuid()}.${image.extname}`
-                await image.move(Application.tmpPath('uploads/cars'), {
-                    name: fileName,
-                    overwrite: true,
-                })
-                imagePaths.push(`uploads/cars/${fileName}`)
-            }
-        }
-
-        const data = request.only([
-            'marque', 'modele', 'annee', 'gamme', 'prix_journalier',
-            'type_vehicule', 'energie', 'boite_auto', 'climatisation',
-            'gps', 'wifi', 'siege_bebe', 'chauffeur', 'longue_duree',
-            'mariage_event', 'marchandises', 'places', 'statut'
-        ])
-
-        const car = await Car.create({
-            ...data,
-            image: JSON.stringify(imagePaths), // Stockage en JSON
+    if (payload.images && payload.images.length > 0) {
+      for (const image of payload.images) {
+        const fileName = `${cuid()}.${image.extname}`
+        await image.move(Application.tmpPath('uploads/cars'), {
+          name: fileName,
+          overwrite: true,
         })
-
-        return response.created(car)
+        imagePaths.push(`uploads/cars/${fileName}`)
+      }
     }
 
-    public async update({ params, request, response }: HttpContextContract) {
-        const car = await Car.find(params.id)
-        if (!car) {
-            return response.notFound({ message: 'Voiture non trouvée' })
-        }
+    // Récupération des champs envoyés
+    const rawData = request.only([
+      'marque', 'modele', 'annee', 'gamme', 'prix_journalier',
+      'type_vehicule', 'energie', 'boite_auto', 'climatisation',
+      'gps', 'wifi', 'siege_bebe', 'chauffeur', 'longue_duree',
+      'mariage_event', 'marchandises', 'places', 'statut'
+    ])
 
-        const imagePaths: string[] = car.image ? JSON.parse(car.image) : []
+    // Cast booléens → 0 ou 1
+    const booleanFields = [
+      'boite_auto', 'climatisation', 'gps', 'wifi', 'siege_bebe',
+      'chauffeur', 'longue_duree', 'mariage_event', 'marchandises',
+    ]
 
-        const newImages = request.files('images', {
-            size: '5mb',
-            extnames: ['jpg', 'png', 'jpeg', 'webp'],
-        })
-
-        for (const image of newImages) {
-            if (imagePaths.length >= 4) break
-            const fileName = `${cuid()}.${image.extname}`
-            await image.move(Application.tmpPath('uploads/cars'), {
-                name: fileName,
-                overwrite: true,
-            })
-            imagePaths.push(`uploads/cars/${fileName}`)
-        }
-
-        const data = request.only([
-            'marque', 'modele', 'annee', 'gamme', 'prix_journalier',
-            'type_vehicule', 'energie', 'boite_auto', 'climatisation',
-            'gps', 'wifi', 'siege_bebe', 'chauffeur', 'longue_duree',
-            'mariage_event', 'marchandises', 'places', 'statut'
-        ])
-
-        car.merge({
-            ...data,
-            image: JSON.stringify(imagePaths),
-        })
-        await car.save()
-
-        return response.ok({ message: 'Voiture mise à jour', car })
+    for (const field of booleanFields) {
+      if (rawData[field] !== undefined) {
+        rawData[field] = rawData[field] === 'true' || rawData[field] === true ? 1 : 0
+      }
     }
+
+    // Création de la voiture
+    const car = await Car.create({
+      ...rawData,
+      image: JSON.stringify(imagePaths),
+    })
+
+    return response.created(car)
+  }
+
+  
+  public async update({ params, request, response }: HttpContextContract) {
+    const car = await Car.find(params.id)
+    if (!car) {
+      return response.notFound({ message: 'Voiture non trouvée' })
+    }
+
+    const imagePaths: string[] = car.image ? JSON.parse(car.image) : []
+
+    const newImages = request.files('images', {
+      size: '5mb',
+      extnames: ['jpg', 'png', 'jpeg', 'webp'],
+    })
+
+    for (const image of newImages) {
+      if (imagePaths.length >= 4) break
+      const fileName = `${cuid()}.${image.extname}`
+      await image.move(Application.tmpPath('uploads/cars'), {
+        name: fileName,
+        overwrite: true,
+      })
+      imagePaths.push(`uploads/cars/${fileName}`)
+    }
+
+    // Données
+    const rawData = request.only([
+      'marque', 'modele', 'annee', 'gamme', 'prix_journalier',
+      'type_vehicule', 'energie', 'boite_auto', 'climatisation',
+      'gps', 'wifi', 'siege_bebe', 'chauffeur', 'longue_duree',
+      'mariage_event', 'marchandises', 'places', 'statut'
+    ])
+
+    // Cast booléens → 0 ou 1
+    const booleanFields = [
+      'boite_auto', 'climatisation', 'gps', 'wifi', 'siege_bebe',
+      'chauffeur', 'longue_duree', 'mariage_event', 'marchandises',
+    ]
+
+    for (const field of booleanFields) {
+      if (rawData[field] !== undefined) {
+        rawData[field] = rawData[field] === 'true' || rawData[field] === true ? 1 : 0
+      }
+    }
+
+    car.merge({
+      ...rawData,
+      image: JSON.stringify(imagePaths),
+    })
+
+    await car.save()
+
+    return response.ok({ message: 'Voiture mise à jour', car })
+  }
+
 
   public async destroy({ params, response }: HttpContextContract) {
     const car = await Car.find(params.id)
