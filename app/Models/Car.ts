@@ -68,6 +68,9 @@ export default class Car extends BaseModel {
   @column()
   public statut: 'Disponible' | 'Indisponible'
 
+  @column()
+  public isDelete: boolean
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

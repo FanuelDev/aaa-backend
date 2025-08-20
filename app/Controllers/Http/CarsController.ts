@@ -6,7 +6,7 @@ import Application from '@ioc:Adonis/Core/Application'
 
 export default class CarsController {
     public async public() {
-        const cars = await Car.all()
+        const cars = await Car.query().where('is_delete', false)
         return cars
     }
 
@@ -41,7 +41,7 @@ export default class CarsController {
             date_fin
         } = request.qs()
 
-        const cars = await Car.query()
+        const cars = await Car.query().where('is_delete', false)
             .where('statut', 'Disponible')
             .if(type_vehicule && Array.isArray(type_vehicule), (q) => q.whereIn('type_vehicule', type_vehicule))
             .if(gamme && Array.isArray(gamme), (q) => q.whereIn('gamme', gamme))
@@ -99,7 +99,7 @@ export default class CarsController {
             places,
         } = request.qs()
 
-        const cars = await Car.query()
+        const cars = await Car.query().where('is_delete', false)
             .if(type_vehicule, (query) => query.where('type_vehicule', type_vehicule))
             .if(gamme, (query) => query.where('gamme', gamme))
             .if(energie, (query) => query.where('energie', energie))
