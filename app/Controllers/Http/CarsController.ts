@@ -164,7 +164,7 @@ export default class CarsController {
     return response.created(car)
   }
 
-  
+
   public async update({ params, request, response }: HttpContextContract) {
     const car = await Car.find(params.id)
     if (!car) {
@@ -206,6 +206,13 @@ export default class CarsController {
       if (rawData[field] !== undefined) {
         rawData[field] = rawData[field] === 'true' || rawData[field] === true ? 1 : 0
       }
+    }
+
+    // Convertir "places" en entier ou NULL
+    if (rawData['places'] !== undefined) {
+      rawData['places'] = rawData['places'] === null || rawData['places'] === 'null' || rawData['places'] === ''
+        ? null
+        : Number(rawData['places'])
     }
 
     car.merge({
