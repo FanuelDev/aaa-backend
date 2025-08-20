@@ -26,7 +26,7 @@ export default class extends BaseSchema {
       table.boolean('wifi').defaultTo(false)
       table.boolean('siege_bebe').defaultTo(false)
 
-      table.string('image').nullable()
+      table.text('image').nullable()
       table.string('statut').defaultTo('Disponible') // ou "Indisponible"
 
       /**
