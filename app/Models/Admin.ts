@@ -5,9 +5,17 @@ export default class Admin extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  
   @column()
   public email: string
+
+  @column()
+  public pieceIdentite: string | undefined
+
+  @column()
+  public name: string | undefined
+
+  @column()
+  public justificatifAdresse: string | undefined
 
   @column()
   public password: string
