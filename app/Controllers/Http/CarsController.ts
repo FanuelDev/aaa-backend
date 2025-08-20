@@ -189,5 +189,17 @@ export default class CarsController {
         return response.ok({ message: 'Voiture mise à jour', car })
     }
 
+  public async destroy({ params, response }: HttpContextContract) {
+    const car = await Car.find(params.id)
+
+    if (!car) {
+      return response.notFound({ message: 'Voiture non trouvée' })
+    }
+
+    car.isDelete = true
+    await car.save()
+
+    return response.ok({ message: 'Voiture supprimée (soft delete)', car })
+  }
 
 }

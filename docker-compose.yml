@@ -1,8 +1,46 @@
-version: "3.8"
+#version: "3.8"
+#
+#services:
+#  aaa_backend:
+#    container_name: aaa-backend
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    restart: always
+#    ports:
+#      - "5555:3333"
+#    environment:
+#      NODE_ENV: production
+#      DB_CONNECTION: sqlite
+#      DB_DATABASE: /app/tmp/db.sqlite3
+#    volumes:
+#      - ./database:/app/tmp/db.sqlite3  # monte ton dossier local ./database dans le conteneur
+
+version: '3'
 
 services:
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: yourpassword
+    ports:
+      - "3305:3306"
+    volumes:
+      - db-data:/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: yourpassword
+
   aaa_backend:
     container_name: aaa-backend
+    # image: perce26/entrersortie:aaa-backend
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,8 +48,12 @@ services:
     ports:
       - "5555:3333"
     environment:
-      NODE_ENV: production
-      DB_CONNECTION: sqlite
-      DB_DATABASE: /app/tmp/db.sqlite3
-    volumes:
-      - ./database:/app/tmp/db.sqlite3  # monte ton dossier local ./database dans le conteneur
+      # NODE_ENV: production
+      DB_CONNECTION: mysql
+      MYSQL_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: yourpassword
+      MYSQL_DATABASE: aaa-db
+
+volumes:
+  db-data:
