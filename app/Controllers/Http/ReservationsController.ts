@@ -1,6 +1,6 @@
 // app/Controllers/Http/ReservationsController.ts
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Reservation from 'App/Models/Reservation'
+import Reservation, {StatutReservation} from 'App/Models/Reservation'
 import StoreReservationValidator from 'App/Validators/StoreReservationValidator'
 import Car from 'App/Models/Car'
 import dayjs from 'dayjs'
@@ -63,21 +63,23 @@ export default class ReservationsController {
         const payload = await request.validate(StoreReservationValidator)
         const car = await Car.findOrFail(payload.car_id)
 
+      const existing = await Reservation
+        .query()
+        .where('car_id', payload.car_id) // vérifie bien la voiture
+        .where('statut', StatutReservation.VALIDEE)       // seulement les réservations activées
+        .where(q => {
+          q.whereBetween('start_date', [payload.start_date.toJSDate(), payload.end_date.toJSDate()])
+            .orWhereBetween('end_date', [payload.start_date.toJSDate(), payload.end_date.toJSDate()])
+            .orWhereRaw('? BETWEEN start_date AND end_date', [payload.start_date.toJSDate()])
+            .orWhereRaw('? BETWEEN start_date AND end_date', [payload.end_date.toJSDate()])
+        })
+        .first()
 
-        const existing = await Reservation
-            .query()
-            .where('id', payload.car_id)
-            .where(q => {
-                q.whereBetween('start_date', [payload.start_date.toJSDate(), payload.end_date.toJSDate()])
-                    .orWhereBetween('end_date', [payload.start_date.toJSDate(), payload.end_date.toJSDate()])
-                    .orWhereRaw('? BETWEEN start_date AND end_date', [payload.start_date.toJSDate()])
-                    .orWhereRaw('? BETWEEN start_date AND end_date', [payload.end_date.toJSDate()])
-            })
-            .first()
-
-        if (existing) {
-            return response.badRequest({ message: 'Ce véhicule est déjà réservé sur cette période.' })
-        }
+      if (existing) {
+        return response.badRequest({
+          message: 'Ce véhicule est déjà réservé sur cette période.'
+        })
+      }
 
         // calcul des jours
         const start = dayjs(payload.start_date.toJSDate())

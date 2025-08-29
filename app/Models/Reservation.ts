@@ -14,7 +14,6 @@ export default class Reservation extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  
   @column()
   public carId: number
 
@@ -27,7 +26,7 @@ export default class Reservation extends BaseModel {
   @column.dateTime()
   public endDate: DateTime
 
-  
+
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 

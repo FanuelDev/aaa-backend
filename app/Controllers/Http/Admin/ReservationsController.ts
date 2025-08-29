@@ -34,6 +34,20 @@ export default class ReservationsController {
         reservation.statut = StatutReservation.VALIDEE
         await reservation.save()
 
-        return { message: 'Réservation validée avec succès' }
+
+// Désactiver les autres réservations de la même voiture sur la même période
+      await Reservation
+        .query()
+        .where('car_id', reservation.carId)
+        .whereNot('id', reservation.id) // exclure la réservation validée
+        .where(q => {
+          q.whereBetween('start_date', [reservation.startDate.toJSDate(), reservation.endDate.toJSDate()])
+            .orWhereBetween('end_date', [reservation.startDate.toJSDate(), reservation.endDate.toJSDate()])
+            .orWhereRaw('? BETWEEN start_date AND end_date', [reservation.startDate.toJSDate()])
+            .orWhereRaw('? BETWEEN start_date AND end_date', [reservation.endDate.toJSDate()])
+        })
+        .update({ statut: StatutReservation.ANNULEE })
+
+      return { message: 'Réservation validée avec succès, les autres réservations sur cette période ont été annulées.' }
     }
 }
