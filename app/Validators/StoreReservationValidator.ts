@@ -25,8 +25,13 @@ export default class StoreReservationValidator {
    */
   public schema = schema.create({
     car_id: schema.number([rules.exists({ table: 'cars', column: 'id' })]),
-    start_date: schema.date({ format: 'yyyy-MM-dd' }),
-    end_date: schema.date({ format: 'yyyy-MM-dd' }),
+    start_date: schema.date({
+      format: 'yyyy-MM-dd HH:mm:ss', // Exemple : "2025-09-05 14:30:00"
+    }),
+    end_date: schema.date(
+      { format: 'yyyy-MM-dd HH:mm:ss' },
+      [rules.afterField('start_date')] // end_date doit être après start_date
+    ),
     chauffeur: schema.boolean.optional(),
     gps: schema.boolean.optional(),
     wifi: schema.boolean.optional(),

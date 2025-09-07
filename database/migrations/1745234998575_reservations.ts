@@ -8,8 +8,8 @@ export default class extends BaseSchema {
       table.increments('id')
       table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
       table.integer('car_id').unsigned().references('id').inTable('cars').onDelete('CASCADE')
-      table.date('start_date')
-      table.date('end_date')
+      table.dateTime('start_date')
+      table.dateTime('end_date')
 
       table.boolean('chauffeur').defaultTo(false)
       table.boolean('gps').defaultTo(false)
