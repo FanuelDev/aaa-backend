@@ -171,22 +171,28 @@ export default class CarsController {
       return response.notFound({ message: 'Voiture non trouvée' })
     }
 
-    const imagePaths: string[] = car.image ? JSON.parse(car.image) : []
+    let imagePaths: string[] = car.image ? JSON.parse(car.image) : []
 
     const newImages = request.files('images', {
       size: '5mb',
       extnames: ['jpg', 'png', 'jpeg', 'webp'],
     })
 
-    for (const image of newImages) {
-      if (imagePaths.length >= 4) break
-      const fileName = `${cuid()}.${image.extname}`
-      await image.move(Application.tmpPath('uploads/cars'), {
-        name: fileName,
-        overwrite: true,
-      })
-      imagePaths.push(`uploads/cars/${fileName}`)
+    if (newImages.length >= 4) {
+      imagePaths = [];
+      for (const image of newImages) {
+        if (imagePaths.length >= 4) break
+        const fileName = `${cuid()}.${image.extname}`
+        await image.move(Application.tmpPath('uploads/cars'), {
+          name: fileName,
+          overwrite: true,
+        })
+        imagePaths.push(`uploads/cars/${fileName}`)
+      }
+    } else {
+      return response.notFound({ message: 'Ajouter plus d\'image, 4 images' })
     }
+
 
     // Données
     const rawData = request.only([
