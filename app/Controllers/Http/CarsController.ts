@@ -178,19 +178,24 @@ export default class CarsController {
       extnames: ['jpg', 'png', 'jpeg', 'webp'],
     })
 
-    if (newImages.length >= 4) {
-      imagePaths = [];
-      for (const image of newImages) {
-        if (imagePaths.length >= 4) break
-        const fileName = `${cuid()}.${image.extname}`
-        await image.move(Application.tmpPath('uploads/cars'), {
-          name: fileName,
-          overwrite: true,
-        })
-        imagePaths.push(`uploads/cars/${fileName}`)
+    if (newImages) {
+
+      if (newImages.length >= 4) {
+        imagePaths = [];
+        for (const image of newImages) {
+          if (imagePaths.length >= 4) break
+          const fileName = `${cuid()}.${image.extname}`
+          await image.move(Application.tmpPath('uploads/cars'), {
+            name: fileName,
+            overwrite: true,
+          })
+          imagePaths.push(`uploads/cars/${fileName}`)
+        }
+      } else {
+        return response.notFound({ message: 'Ajouter plus d\'image, 4 images' })
       }
     } else {
-      return response.notFound({ message: 'Ajouter plus d\'image, 4 images' })
+      imagePaths = JSON.parse(car.image)
     }
 
 
