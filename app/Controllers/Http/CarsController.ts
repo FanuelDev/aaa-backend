@@ -178,8 +178,7 @@ export default class CarsController {
       extnames: ['jpg', 'png', 'jpeg', 'webp'],
     })
 
-    if (newImages) {
-
+    if (newImages.length != 0) {
       if (newImages.length >= 4) {
         imagePaths = [];
         for (const image of newImages) {
